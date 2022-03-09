@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.Swagger;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,11 +32,9 @@ namespace MicroRabbit.Banking.Api
         public void ConfigureServices(IServiceCollection services)
         {
 
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             services.AddControllers();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Banking Microservices", Version = "v1" });
-            });
+
             RegisterServices(services);
             services.AddDbContext<BankingDbContext>(options =>
             {
@@ -43,6 +42,10 @@ namespace MicroRabbit.Banking.Api
             });
             services.AddMediatR(typeof(Startup));
 
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Banking Microservices", Version = "v1" });
+            });
         }
 
         private void RegisterServices(IServiceCollection services)
@@ -70,6 +73,7 @@ namespace MicroRabbit.Banking.Api
             {
                 endpoints.MapControllers();
             });
+            app.UseMvc();
         }
     }
 }
